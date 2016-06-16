@@ -1,92 +1,57 @@
-﻿#include <iostream>
-#include <vector>
-#include <cmath>
-#include <algorithm>
-
+﻿#include <iostream> 
+#include <algorithm> 
 using namespace std;
-
+long long N, M;
+long long max1 = 0;
+long long geshu(long long i, long long x);
+long long fun(long long i, long long j);
+long long deng = 0, dengshu = 0;
+long long C(long long mid);
+long long k;
+long long chaxunzhi;
 int main()
 {
-	int row, col;
-	int k;
-	while(cin >> row >> col >> k)
-	{
-		for (int i = 1; i <= row; ++i)
-		{
-			for (int j = 1; j <= col; ++j)
-				cout << 2 * i * j + 3 * i + 3 * j + 3 << " ";
-			cout << endl;
-		}
-
-		vector<int> test;
-		for(int i = 1; i <= row; ++i)
-		{
-			for (int j = 1; j <= col; ++j)
-				test.push_back(2 * i * j + 3 * i + 3 * j + 3);
-		}
-		sort(test.begin(), test.end());
-		cout << test[k - 1] << endl;
-		vector<int> what_fuck;
-		for(int i = 0; i < row + col - 1; ++i)
-		{
-			if(i + 1 < min(row, col))
-				what_fuck.push_back(i + 1);
-			else if (i + 1 > max(row, col))
-				what_fuck.push_back(row + col - 1 - i);
+	while (-1 == scanf("%lld%lld%lld", &N, &M, &k)) {
+		long long lo = 11ll, hi = fun(N, M);
+		while (lo + 1<hi) {
+			long long mid = (lo + hi + 1) / 2;
+			long long xiao = C(mid);
+			if (xiao + deng >= k&&xiao<k) { hi = mid; break; }
+			if (xiao <= k)
+			{ if (xiao == k) hi = mid - 1;
+				else lo = mid; }
 			else
-				what_fuck.push_back(min(row, col));
-			cout << what_fuck.back() << " ";
+			{ hi = mid; }
 		}
-		cout << endl;
-		int sum = 0;
-		int aim = 0;
-		int left = 0;
-		for(size_t i = 0; i < what_fuck.size(); ++i)
-		{
-			sum += what_fuck[i];
-			if(sum >= k)
-			{
-				aim = i + 2;
-				left = what_fuck[i] - (sum - k) - 1;
-				break;
-			}
-		}
-		vector<int> value;
-		/*
-		int count = 0;
-		if(aim - 2 + 1 < max(row, col))
-			for (int i = 1; ++count <= what_fuck[aim - 2]; ++i)
-			{
-				value.push_back(2 * i * (aim - i) + 3 * i + 3 * (aim - i) + 3);
-			}
-		else
-			for (int i = 1 + (aim - 2 + 1) - max(row, col); ++count <= what_fuck[aim - 2]; ++i)
-			{
-				value.push_back(2 * i * (aim - i) + 3 * i + 3 * (aim - i) + 3);
-			}
-		*/
-		vector<pair<int, int>> have_try;
-		for(int i = 1; i < aim; ++i)
-		{
-			have_try.push_back(pair<int, int>(i, aim - i));
-		}
-		vector<pair<int, int>> have_try_new;
-		for(auto p : have_try)
-		{
-			if (p.first <= row && p.second <= col)
-				have_try_new.push_back(p);
-		}
-
-		for (auto p : have_try_new)
-		{
-			value.push_back(2 * p.first * p.second + 3 * p.first + 3 * p.second + 3);
-			cout << p.first << " " << p.second << " " << value.back() << endl;
-			
-		}
-			
-		sort(value.begin(), value.end());
-		cout << value[left] << endl;
-		
+		printf("%lld\n", hi);
 	}
-	return 0;
+
+}
+
+long long fun(long long i, long long j) {
+	return 2ll * i*j + 3ll * i + 3ll * j + 3ll;
+}
+
+long long C(long long mid) {
+	deng = 0;
+	long long count = 0;
+	chaxunzhi = M;
+	for (int i = 1; i <= N; i++) {
+		if (fun(i, M)<mid) { count += M; continue; }
+		if (fun(i, 1)>mid) { break; }
+		count += geshu(i, mid);
+		if (count >= k) return count;
+	}
+	return count;
+}
+
+long long geshu(long long i, long long x) {
+	if (fun(i, M)<x) return M;
+	if (fun(i, 1)>x) return 0;
+	long long result1 = 0;
+	for (int j = chaxunzhi; j >= 1; j--) {
+		if (fun(i, j) == x) { deng++; dengshu = x; }
+		if (fun(i, j)<x) { chaxunzhi = j; return j; }
+	}
+	return result1;
 }
