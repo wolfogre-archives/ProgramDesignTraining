@@ -17,8 +17,29 @@ int main()
 		else
 			input.insert(pair<char, int>(ch, 1));
 	}
+	vector<int> numerator, denominator;
+	for (size_t i = 1; i <= str.length(); ++i)
+		numerator.push_back(i);
 	for (auto p : input)
-		cout << p.first << p.second << endl;
-	//TODO:go on
+		for (int i = 1; i <= p.second; ++i)
+			denominator.push_back(i);
+	for(auto it : denominator)
+	{
+		for(size_t i = 0; i < numerator.size(); ++i)
+		{
+			if (numerator[i] % it == 0)
+			{
+				numerator[i] = numerator[i] / it;
+				break;
+			}
+				
+		}
+	}
+
+	int result = 1;
+	for (auto it : numerator)
+		result *= it;
+
+	cout << result;
 	return 0;
 }
