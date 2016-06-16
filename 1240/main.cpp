@@ -47,7 +47,7 @@ int main()
 	string input[4];
 	while(cin >> input[0] >> input[1] >> input[2] >> input[3])
 	{
-		int num[4]
+		int num[4];
 	}
 	//      1
 	//  1      1
