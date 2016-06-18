@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <sstream>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -60,28 +61,25 @@ bigint add(const bigint &a, const bigint &b)
 
 bigint mul(bigint a, bigint b)
 {
-	while (a.size() + b.size() > 100)
-	{
-		if (a.size() > b.size())
-			a.pop_back();
-		else
-			b.pop_back();
-	}
-
+	clock_t start = clock();
 	bigint result;
 	for (size_t i = 0; i < a.size(); ++i)
 		for (size_t j = 0; j < b.size(); ++j)
 		{
 			bigint temp = make(a[i] * b[j], i + j);
 			result = add(result, temp);
+			while (result.size() > 100)
+				result.pop_back();
 		}
-	while (result.size() > 100)
-		result.pop_back();
+	clock_t end = clock();
+	cout << double(end - start) / CLOCKS_PER_SEC << " to " << a.size() << "*" << b.size() << endl;
 	return result;
 }
 
 int main()
 {
+	
+/*
 	int n, m;
 	cin >> n >> m;
 	int s = n + m;
@@ -110,8 +108,15 @@ int main()
 		
 
 	bigint result = make("1");
+
 	for(auto i : numerator)
-		result = mul(result, make(i, 0));
+	{
+		if (i != 1)
+			result = mul(result, make(i, 0));
+	}
+
+
+		
 
 	string output = get(result);
 
@@ -124,6 +129,12 @@ int main()
 			cout << output[i * 10 + j];
 		cout << endl;
 	}
+*/
 
+	string num1, num2;
+	while(cin >> num1 >> num2)
+	{
+		cout << get(mul(make(num2), make(num2))) << endl;
+	}
 	return 0;
 }
