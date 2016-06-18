@@ -2,24 +2,45 @@
 #include <sstream>
 #include <vector>
 #include <ctime>
+#include <iomanip>
 
 using namespace std;
 
 typedef vector<int> bigint;
 
+#define BILLION 1000000000
+
 bigint make(string str)
 {
 	bigint result;
+	string temp = "";
 	for (int i = str.length() - 1; i >= 0; --i)
 	{
 		if (str[i] < '0' || str[i] > '9')
-			return result;
-		result.push_back(str[i] - '0');
+			throw exception("error");
+		temp = str[i] + temp;
+		if(temp.length() == 9)
+		{
+			stringstream sstr;
+			sstr << temp;
+			temp = "";
+			int num;
+			sstr >> num;
+			result.push_back(num);
+		}
+	}
+	if (temp.length() != 0)
+	{
+		stringstream sstr;
+		sstr << temp;
+		int num;
+		sstr >> num;
+		result.push_back(num);
 	}
 	return result;
 }
 
-bigint make(int num, size_t zero_num)
+bigint make(long long num, size_t zero_num)
 {
 	bigint result;
 	stringstream sstr;
@@ -35,11 +56,14 @@ bigint make(int num, size_t zero_num)
 string get(bigint bi)
 {
 	stringstream sstr;
+	sstr << bi.back();
+	bi.pop_back();
 	while (!bi.empty())
 	{
-		sstr << bi.back();
+		sstr << setw(9) << setfill('0') << bi.back();
 		bi.pop_back();
 	}
+
 	string result;
 	sstr >> result;
 	return result;
@@ -52,8 +76,8 @@ bigint add(const bigint &a, const bigint &b)
 	for (size_t i = 0; i < a.size() || i < b.size() || carry != 0; ++i)
 	{
 		int sum = (i < a.size() ? a[i] : 0) + (i < b.size() ? b[i] : 0) + carry;
-		carry = sum / 10;
-		sum %= 10;
+		carry = sum / BILLION;
+		sum %= BILLION;
 		result.push_back(sum);
 	}
 	return result;
@@ -66,10 +90,10 @@ bigint mul(bigint a, bigint b)
 	for (size_t i = 0; i < a.size(); ++i)
 		for (size_t j = 0; j < b.size(); ++j)
 		{
-			bigint temp = make(a[i] * b[j], i + j);
+			if((i + j) * 9 > 100)
+				continue;
+			bigint temp = make(long long(a[i]) * long long(b[j]), (i + j) * 9);
 			result = add(result, temp);
-			while (result.size() > 100)
-				result.pop_back();
 		}
 	clock_t end = clock();
 	cout << double(end - start) / CLOCKS_PER_SEC << " to " << a.size() << "*" << b.size() << endl;
@@ -79,7 +103,6 @@ bigint mul(bigint a, bigint b)
 int main()
 {
 	
-/*
 	int n, m;
 	cin >> n >> m;
 	int s = n + m;
@@ -129,12 +152,11 @@ int main()
 			cout << output[i * 10 + j];
 		cout << endl;
 	}
-*/
 
-	string num1, num2;
-	while(cin >> num1 >> num2)
-	{
-		cout << get(mul(make(num2), make(num2))) << endl;
-	}
-	return 0;
+//	string num1, num2;
+//	while(cin >> num1 >> num2)
+//	{
+//		cout << get(mul(make(num1), make(num2))) << endl;
+//	}
+//	return 0;
 }
