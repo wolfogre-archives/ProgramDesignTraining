@@ -1,72 +1,60 @@
 ﻿#include <iostream>
 #include <string>
+#include <vector>
 #include <cmath>
-#include <map>
+#include <algorithm>
+
 
 using namespace std;
 
-map<int, string> dictionary;
-string temp(15,'0');
+vector<int> value;
+vector<pair<int, int>> when_have;
+vector<pair<int, int>> when_not_have;
+vector<pair<int, int>> min_and_max;
 
-map<int, int> two_pow;
-
-int get_two_pow(int n)
+void init()
 {
-	return two_pow.find(n)->second;
+	when_have.push_back(pair<int, int>(1, 1));
+	when_not_have.push_back(pair<int, int>(0, 0));
+	min_and_max.push_back(pair<int, int>(0, 1));
+	value.push_back(1);
+	for(int i = 1, if_signed = -1; i <= 15; ++i, if_signed *= -1)
+	{
+		int v = pow(2, i) * if_signed;
+		value.push_back(v);
+		when_have.push_back(pair<int, int>(min_and_max[i - 1].first + v, min_and_max[i - 1].second + v));
+		when_not_have.push_back(pair<int, int>(min_and_max[i - 1].first, min_and_max[i - 1].second));
+		min_and_max.push_back(pair<int, int>(min(when_have[i].first, when_not_have[i].first), max(when_have[i].second, when_not_have[i].second)));
+	}
 }
 
 int bits_to_int(string bits)
 {
 	int result = 0;
-	int if_signed = 1;
-	for(int i = bits.size() - 1, power = 0; i >= 0; --i, ++power)
-	{
-		result += get_two_pow(power) * if_signed * (bits[i] - '0');
-		if_signed *= -1;
-	}
+	for (int i = bits.size() - 1, power = 0, if_signed = 1; i >= 0; --i, ++power, if_signed *= -1)
+		result += pow(2, power) * if_signed * (bits[i] - '0');
 	return result;
-}
-
-
-void init_dictionary(int index)
-{
-	if (index > 14)
-	{
-		int value = bits_to_int(temp);
-		dictionary.insert(pair<int, string>(value, temp));
-		return;
-	}
-	temp[index] = '0';
-	init_dictionary(index + 1);
-	temp[index] = '1';
-	init_dictionary(index + 1);
-}
-
-void init_two_pow()
-{
-	for (int i = 0; i <= 15; ++i)
-		two_pow.insert(pair<int, int>(i, pow(2, i)));
-}
-
-void init()
-{
-	init_two_pow();
-	init_dictionary(0);
 }
 
 string int_to_bits(int n)
 {
-	string result = dictionary.find(n)->second;
-	while (result[0] == '0')
+	string result(16, '0');
+	for(int i = 15; i >= 0 && n != 0; --i)
+	{
+		if(when_have[i].first <= n && when_have[i].second >= n)
+		{
+			result[15 - i] = '1';
+			n -= value[i];
+		}
+	}
+	while (result.front() == '0' && result.length() > 1)
 		result.erase(result.begin());
 	return result;
-	
 }
 
 int main()
 {
 	init();
-	cout << "Finished" << endl;
 	int t;
 	cin >> t;
 	while(t-- > 0)
