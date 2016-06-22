@@ -24,8 +24,7 @@ bool next_permutation(vector<int> &array)
 	swap(array[start], array[end]);
 
 	//反转array[start + 1]至尾
-	int i, j;
-	for(i = start + 1, j = array.size() - 1; i < j; ++i, --j)
+	for(int i = start + 1, j = array.size() - 1; i < j; ++i, --j)
 		swap(array[i], array[j]);
 	return true;
 }
