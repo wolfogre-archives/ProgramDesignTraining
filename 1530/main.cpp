@@ -1,4 +1,6 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿#error 1530 not finished
+
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
 #include <sstream>

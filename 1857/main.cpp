@@ -1,4 +1,6 @@
-﻿#include <iostream>
+﻿#error 1857 not finished
+
+#include <iostream>
 
 using namespace std;
 

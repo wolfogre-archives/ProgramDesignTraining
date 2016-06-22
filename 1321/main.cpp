@@ -1,4 +1,6 @@
-﻿#include <iostream>
+﻿#error 1321 not finished
+
+#include <iostream>
 #include <sstream>
 #include <vector>
 #include <ctime>

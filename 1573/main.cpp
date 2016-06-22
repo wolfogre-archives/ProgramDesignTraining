@@ -1,4 +1,6 @@
-﻿#include <iostream>
+﻿#error 1573 not finished
+
+#include <iostream>
 #include <map>
 
 using namespace std;
