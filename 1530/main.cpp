@@ -1,93 +1,46 @@
-﻿#error 1530 not finished
-
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <ctime>
+﻿#include <iostream>
+#include <string>
 
 using namespace std;
 
-typedef vector<int> bigint;
+typedef long long llong;
 
-bigint make(string str)
+llong hash_code = 1234567890;
+
+llong hash_table[10000];
+
+void init_hash_table()
 {
-	bigint result;
-	for (int i = str.length() - 1; i >= 0; --i)
+	for(int num = 1; num <= 9999; ++num)
 	{
-		if (str[i] < '0' || str[i] > '9')
-			return result;
-		result.push_back(str[i] - '0');
+		llong r = 1;
+		for (int i = 0; i < num; ++i)
+			r = (r * num % hash_code);
+		hash_table[num] = r;
 	}
-	return result;
 }
 
-bigint make(int num, size_t zero_num)
+int search_hash_table(llong hash_value)
 {
-	bigint result;
-	stringstream sstr;
-	sstr << num;
-	while (zero_num-- > 0)
-		sstr << "0";
-	string str;
-	sstr >> str;
-	result = make(str);
-	return result;
-}
-
-string get(bigint bi)
-{
-	stringstream sstr;
-	while (!bi.empty())
-	{
-		sstr << bi.back();
-		bi.pop_back();
-	}
-	string result;
-	sstr >> result;
-	return result;
-}
-
-bigint add(const bigint &a, const bigint &b)
-{
-	bigint result;
-	int carry = 0;
-	for (size_t i = 0; i < a.size() || i < b.size() || carry != 0; ++i)
-	{
-		int sum = (i < a.size() ? a[i] : 0) + (i < b.size() ? b[i] : 0) + carry;
-		carry = sum / 10;
-		sum %= 10;
-		result.push_back(sum);
-	}
-	return result;
-}
-
-bigint mul(const bigint &a, const bigint &b)
-{
-	bigint result;
-	for (size_t i = 0; i < a.size(); ++i)
-		for (size_t j = 0; j < b.size(); ++j)
-		{
-			bigint temp = make(a[i] * b[j], i + j);
-			result = add(result, temp);
-		}
-	return result;
+	for(int i = 1; i < 10000; ++i)
+		if (hash_value == hash_table[i])
+			return i;
+	return -1;
 }
 
 int main()
 {
-	for(int i = 1; i <= 10000; ++i)
+	init_hash_table();
+	string str;
+	while(cin >> str)
 	{
-		bigint result = make("1");
-		bigint b = make(i, 0);
-		for (int j = 0; j < i; ++j)
-			result = mul(b, result);
-		time_t t;
-		time(&t);
-		cout << asctime(localtime(&t)) << "\t" << i << "\t" << get(result) << endl;
-		
+		llong hash_value = 0;
+		for (auto it : str)
+			hash_value = (hash_value * 10 + it - '0') % hash_code;
+		int result = search_hash_table(hash_value);
+		if (result != -1)
+			cout << result << endl;
+		else
+			cout << "NO" << endl;
 	}
-	
-	return 0;
 }
