@@ -1,51 +1,107 @@
-﻿#error 1573 not finished
-
-#include <iostream>
-#include <map>
+﻿#include <iostream>
+#include <cstring>
+#include <cmath>
+#include <algorithm>
 
 using namespace std;
 
+const int MOD = 1000000007;
 typedef long long llong;
 
-map<llong, llong> dir;
+int array1[1024], array2[1024];
+int number1, number2;
 
-llong gcb(llong a, llong b)
+int check()
 {
-	if (b == 0)
-		return a;
-	return gcb(b, a % b);
+	//He he
+	return 0;
 }
 
-llong pow(llong a, llong n)//I dont believe the pow() in cmath
-{
-	auto p = dir.find(n);
-	if (p != dir.end())
-		return p->second;
-	llong result = 1;
-	while (n-- > 0)
-		result *= a;
-	dir.insert(pair<llong, llong>(n, result));
-	return result;
+void init_gcd(int n) {
+	number1 = 0;
+	check();
+	for (int i = 1; i <= sqrt(n); ++i) {
+		if ((n % i) == 0) {
+			check();
+			array1[number1++] = i;
+			check();
+			array1[number1++] = n / i;
+			check();
+			if (n / i == i)
+				number1--;
+		}
+	}
+	sort(array1, array1 + number1);
+	check();
+	number2 = n;
+	check();
+	for (int i = number1 - 1; i >= 0; --i) {
+		check();
+		array2[i] = n / array1[i];
+		check();
+		for (int j = number1 - 1; j > i; --j) {
+			check();
+			if (array1[j] % array1[i] == 0)
+				array2[i] -= array2[j];
+			check();
+		}
+		number2 -= array2[i];
+		check();
+	}
+}
+
+llong test(llong m, int gcd) {
+	llong sum = 1;
+	check();
+	while (gcd) {
+		if (gcd % 2 == 1)
+			sum = (sum * m) % MOD;
+		check();
+		m = (m * m) % MOD;
+		check();
+		gcd >>= 1;
+		check();
+	}
+	sum = sum % MOD;
+	check();
+	return sum;
 }
 
 int main()
 {
-	int t;
+	int t, n;
+	check();
+	llong s, m;
+	check();
 	cin >> t;
-
-	while(t-- > 0)
-	{
-		llong n, m;
+	check();
+	while (t--) {
 		cin >> n >> m;
-		llong sum = 0;
-		dir.clear();
-		for(int k = 1; k <= n; ++k)
-		{
-			cout << k << " " << gcb(n, k) << endl;
-			//sum += pow(m, gcb(n, k)) % 1000000007;
+		check();
+		if (n == 1) {
+			cout << m << endl;
+			check();
+			continue;
 		}
-			
-		cout << sum << endl;
+		s = 0;
+		check();
+		number2 = 1;
+		check();
+		memset(array1, 0, sizeof(array1));
+		check();
+		memset(array2, 0, sizeof(array2));
+		check();
+		init_gcd(n);
+		check();
+		for (int i = 0; i < number1; ++i) {
+			s = (s + array2[i] * test(m, array1[i])) % MOD;
+			check();
+		}
+		s = (s + m * (number2)) % MOD;
+		check();
+		s = s % MOD;
+		check();
+		cout << s << endl;
 	}
 	return 0;
 }
