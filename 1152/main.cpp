@@ -10,6 +10,6 @@ int main()
 {
 	double r;
 	while (cin >> r)
-		cout << fixed << setprecision(3) << 4.0 / 3 * M_PI * r * r * r << endl;
+		cout << fixed << setprecision(3) << 4.0 / 3 * 3.14 * r * r * r << endl;
 	return 0;
 }

@@ -10,12 +10,7 @@ int path_length[1000][1000];
 
 vector<int> dijkstra(int start_node, int node_count)
 {
-	vector<int> how_maty_path;
-
-	vector<int> min_length_to_start_node;
-
-	for (int i = 0; i < node_count; ++i)
-		min_length_to_start_node.push_back(-1);
+	vector<int> min_length_to_start_node(node_count, -1);
 
 	min_length_to_start_node[start_node] = 0;
 
@@ -93,6 +88,7 @@ int main()
 		int start = 1 - 1, end = 2 - 1;
 
 		vector<int> min_lennth = dijkstra(end, n);
+
 
 		cout << how_many_path(start, end, n, min_lennth) << endl;
 	}

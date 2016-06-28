@@ -1,13 +1,13 @@
-﻿#include <stdio.h>  
-#include <iostream>  
+﻿#include<iostream>  
+#include<cmath>  
 #include <string>
-
 using namespace std;
+
 
 
 void uselese()
 {
-
+	
 	{
 		double r;
 		while (cin >> r)
@@ -151,76 +151,65 @@ void uselese()
 	}
 }
 
-
-
-#define MAX 10000000  
-#define MIN -10000000  
-
-int ln[200], sum[200];
-int  n, m;
-int mn, mx;
-int A[200][20];//A[i][j]=第1-i个数分成j份，结果最大值  
-int B[200][20];//B[i][j]=第1-i个数分成j份，结果最小值  
-
-int MinValue(int a, int b)
+long long f[1005];
+int mod = 1071017;;
+//计算P（1071017）的欧拉值
+int Eular(int p)
 {
-	if (a>b)
-		return b;
-	return a;
-}
-int MaxValue(int a, int b)
-{
-	if (a>b)
-		return a;
-	return b;
-}
-void DP(int a[])
-{
-	int i, j, k;
-	for (i = 1; i <= n; i++)
-		sum[i] = sum[i - 1] + a[i];
-	for (i = 0; i <= n; i++)
-		for (j = 0; j <= m; j++)
+	int r = 1;
+	for (int i = 2; i * i <= p; i++)
+		if (p % i == 0)		//i是p的因数
 		{
-			A[i][j] = 0;
-			B[i][j] = -1u >> 1;
-		}
-	for (i = 1; i <= n; i++)
-	{
-		A[i][1] = B[i][1] = (sum[i] % 10 + 10) % 10;
-	}
-	A[0][0] = 1;
-	B[0][0] = 1;
-	for (j = 2; j <= m; j++)
-	{
-		for (i = j; i <= n; i++)
-		{
-			for (k = j - 1; k<i; k++)
+			p /= i;
+			r *= (i - 1);
+			while (p % i == 0)
 			{
-				{
-					A[i][j] = MaxValue(A[i][j], A[k][j - 1] * (((sum[i] - sum[k]) % 10 + 10) % 10));
-					B[i][j] = MinValue(B[i][j], B[k][j - 1] * (((sum[i] - sum[k]) % 10 + 10) % 10));
-				}
+				p /= i;
+				r *= i;
 			}
 		}
+	if (p > 1)
+		r *= (p - 1);
+	return r;
+}
+
+//计算a^(b mod 
+int pow(int a, int b, int mod)
+{
+	int r = 1;
+	for (int i = 1; i <= b; ++i) {
+		r *= a;
+		r = r % mod;
 	}
-	mx = MaxValue(mx, A[n][m]);
-	mn = MinValue(mn, B[n][m]);
+	return r;
+}
+
+//计算结果
+int GetR(int n, int mod) {
+	if (n == 0)
+		return 1;
+	return pow(3, GetR(n - 1, Eular(mod)), mod);
 }
 int main()
 {
-	int i, j, k;
-	mx = 0;
-	mn = -1u >> 1;
-	scanf("%d%d", &n, &m);
-	for (i = 1; i <= n; i++)
-	{
-		scanf("%d", &ln[i]);
 
-		ln[i + n] = ln[i];
+	f[0] = 1;
+	int t;
+	cin >> t;
+	while (t-->0)
+	{
+		int n;
+		cin >> n;
+		if (n >= 6)
+		{
+			cout << "525919" << endl;
+			continue;
+		}
+		int i = 1;
+		int tmpr = GetR(n, mod);
+		cout << tmpr << endl;
+
 	}
-	for (i = 0; i<n; i++)
-		DP(ln + i);
-	printf("%d\n%d\n", mn, mx);
+
 	return 0;
 }
