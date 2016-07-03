@@ -1,51 +1,77 @@
 ﻿#include <iostream>
 #include <vector>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
-int record[21][21];
+int min_record[21][21];
+string result_record[21][21];
+
 vector<int> input;
 
-#error 1611 not work
-
-int get_min_time_to_mul(int start, int end)
+int get_min_time_to_mul(int start, int end, string &result)
 {
 	if (start == end)
 	{
-		cout << start << " " << end << " " << input[start - 1] * input[start] * input[start + 1] << endl;;
-		return input[start - 1] * input[start] * input[start + 1];
+		stringstream sstr;
+		sstr << "A" << start + 1;
+		sstr >> result;
+		return 0;
 	}
 		
-	if (record[start][end] != -1)
-		return record[start][end];
-	int min = INT32_MAX;
-	for(int mid = start; mid < end; ++mid)
+	if (min_record[start][end] != -1)
 	{
-		int temp = get_min_time_to_mul(start, mid) + get_min_time_to_mul(mid + 1, end) + input[start - 1] * input[mid + 1] * input[end + 1];
-		if (temp < min)
-			min = temp;
+		result = result_record[start][end];
+		return min_record[start][end];
 	}
-	record[start][end] = min;
-	cout << start << " " << end << " " << min << endl;;
+		
+	int min = INT32_MAX;
+
+	for(int i = start; i < end; ++i)
+	{
+		string temp_str1, temp_str2;
+		int temp = input[start] * input[i + 1] * input[end + 1] + get_min_time_to_mul(start, i, temp_str1) + get_min_time_to_mul(i + 1, end, temp_str2);
+		if (min > temp)
+		{
+			result = temp_str1 + temp_str2;
+			min = temp;
+		}
+			
+	}
+	result = "(" + result + ")";
+	min_record[start][end] = min;
+	result_record[start][end] = result;
 	return min;
 }
 
 
-int get_min_time()
+int get_min_time(string &result)
 {
-	return get_min_time_to_mul(1, input.size() - 2);
+	int r =  get_min_time_to_mul(0, input.size() - 2, result);
+	if(result.length() > 2)
+	{
+		result.erase(0, 1);
+		result.erase(result.length() - 1, 1);
+	}
+	return r;
 }
 
 
 int main()
 {
 	int n;
+	int count = 0;
 	while(cin >> n)
 	{
 		++n;
 		for (int i = 0; i < n; ++i)
 			for (int j = 0; j < n; ++j)
-				record[i][j] = -1;
+			{
+				min_record[i][j] = -1;
+				result_record[i][j] = "";
+			}
+				
 		input.clear();
 		while(n-- > 0)
 		{
@@ -53,7 +79,9 @@ int main()
 			cin >> temp;
 			input.push_back(temp);
 		}
-		cout << get_min_time() << endl;
+		string result;
+		cout << "Case " << ++count << endl;
+		cout << get_min_time(result) << " " << result << endl;
 		
 
 	}
